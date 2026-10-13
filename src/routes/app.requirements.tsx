@@ -1,4 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
+import { Sparkles } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { Plus } from "lucide-react";
 import { toast } from "sonner";
@@ -27,7 +29,7 @@ function Page() {
   };
   return (
     <>
-      <PageHeader title="Requirements" sub="Traceable requirements linked to tasks, tests and code." />
+      <PageHeader title="Requirements" sub="Traceable requirements linked to tasks, tests and code." action={<Button asChild variant="outline"><Link to="/app/ai" search={{ tool: "requirements" }}><Sparkles /> Generate with AI</Link></Button>} />
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Stat label="Total" value={String(list.length)} /><Stat label="Approved" value={String(list.filter((r) => r.status === "Approved").length)} />
         <Stat label="Traceability" value="94%" delta="linked to tests" /><Stat label="Change requests" value="3" delta="this sprint" />

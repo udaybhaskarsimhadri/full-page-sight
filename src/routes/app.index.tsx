@@ -1,17 +1,24 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, type ReactNode } from "react";
 import { GripVertical, Sparkles } from "lucide-react";
 import { Panel, Stat, PageHeader, Progress, Pill } from "@/components/devpulse/ui";
 import { VelocityChart, BurndownChart, CommitsChart, LanguagesChart } from "@/components/devpulse/charts";
-import { projects, aiRecs, bugs, tests } from "@/lib/devpulse-data";
+import { projects, bugs, tests } from "@/lib/devpulse-data";
 
 export const Route = createFileRoute("/app/")({ component: Dashboard });
 
 const widgets: Record<string, { title: string; wide?: boolean; body: ReactNode }> = {
   velocity: { title: "Sprint velocity", body: <VelocityChart /> },
   burndown: { title: "Sprint 24 burndown", body: <BurndownChart /> },
-  ai: { title: "AI recommendations", body: (
-    <ul className="space-y-3 text-sm">{aiRecs.map((r) => <li key={r} className="flex gap-3"><Sparkles className="mt-0.5 h-4 w-4 shrink-0" />{r}</li>)}</ul>) },
+  ai: { title: "AI copilot", body: (
+    <div className="space-y-2">{[
+      { tool: "health", q: "Explain the health of every active project, ranked by risk.", l: "Explain project health" },
+      { tool: "advisor", q: "Give me the top portfolio-wide recommendations for this week.", l: "Get recommendations" },
+      { tool: "bug", q: "Analyze the open Critical and High bugs and prioritize fixes.", l: "Triage critical bugs" },
+      { tool: "sprint", q: "Plan the next sprint for Orion Mobile based on current backlog and velocity.", l: "Plan next sprint" },
+    ].map((a) => (
+      <Link key={a.l} to="/app/ai" search={{ tool: a.tool as "health", q: a.q }} className="flex items-center gap-3 rounded-xl border border-line px-4 py-2.5 text-sm transition hover:border-foreground/20 hover:bg-secondary/40">
+        <Sparkles className="h-4 w-4 shrink-0" />{a.l}</Link>))}</div>) },
   health: { title: "Project health", body: (
     <div className="space-y-4">{projects.map((p) => (
       <div key={p.name}><div className="mb-1.5 flex justify-between text-sm"><span>{p.name}</span><span className="text-muted-foreground">{p.progress}%</span></div><Progress v={p.progress} /></div>))}</div>) },
