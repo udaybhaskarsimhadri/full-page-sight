@@ -3,12 +3,19 @@ import { useState, type ReactNode } from "react";
 import { GripVertical, Sparkles } from "lucide-react";
 import { Panel, Stat, PageHeader, Progress, Pill } from "@/components/devpulse/ui";
 import { VelocityChart, BurndownChart, CommitsChart, LanguagesChart } from "@/components/devpulse/charts";
-import { projects, bugs, tests } from "@/lib/devpulse-data";
+import { projects, bugs, tests, repos, activity } from "@/lib/devpulse-data";
 
 export const Route = createFileRoute("/app/")({ component: Dashboard });
 
 const widgets: Record<string, { title: string; wide?: boolean; body: ReactNode }> = {
-  velocity: { title: "Sprint velocity", body: <VelocityChart /> },
+  attention: { title: "Projects requiring attention", body: (
+    <div className="space-y-3 text-sm">{projects.filter((p) => p.health !== "Healthy").map((p) => (
+      <Link key={p.name} to="/app/projects" className="flex items-center justify-between gap-3 rounded-xl border border-line px-4 py-3 transition hover:border-foreground/20">
+        <div><div>{p.name}</div><div className="text-label text-muted-foreground">Lead {p.lead} · due {p.due}</div></div><Pill strong>{p.health}</Pill></Link>))}</div>) },
+  activity: { title: "Recent team activity", body: (
+    <ul className="space-y-3 text-sm">{activity.map((a) => (
+      <li key={a.what} className="flex gap-3"><span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-foreground" /><div><span className="font-medium">{a.who}</span> <span className="text-muted-foreground">{a.what}</span><div className="text-label text-dim">{a.when}</div></div></li>))}</ul>) },
+  velocity: { title: "Sprint progress", body: <VelocityChart /> },
   burndown: { title: "Sprint 24 burndown", body: <BurndownChart /> },
   ai: { title: "AI copilot", body: (
     <div className="space-y-2">{[
@@ -22,7 +29,7 @@ const widgets: Record<string, { title: string; wide?: boolean; body: ReactNode }
   health: { title: "Project health", body: (
     <div className="space-y-4">{projects.map((p) => (
       <div key={p.name}><div className="mb-1.5 flex justify-between text-sm"><span>{p.name}</span><span className="text-muted-foreground">{p.progress}%</span></div><Progress v={p.progress} /></div>))}</div>) },
-  commits: { title: "Code activity", body: <CommitsChart /> },
+  commits: { title: "Repository activity", body: <CommitsChart /> },
   langs: { title: "Technology mix", body: <LanguagesChart /> },
   bugs: { title: "Bug dashboard", body: (
     <div className="space-y-3 text-sm">{bugs.slice(0, 4).map((b) => (
@@ -34,6 +41,8 @@ const widgets: Record<string, { title: string; wide?: boolean; body: ReactNode }
 
 function Dashboard() {
   const { session } = Route.useRouteContext();
+  const passed = tests.reduce((a, t) => a + t.pass, 0);
+  const failed = tests.reduce((a, t) => a + t.fail, 0);
   const [order, setOrder] = useState(Object.keys(widgets));
   const [drag, setDrag] = useState<string | null>(null);
   const drop = (target: string) => {
@@ -44,12 +53,13 @@ function Dashboard() {
   };
   return (
     <>
-      <PageHeader title={`Welcome back, ${session.name.split(" ")[0]}`} sub="Here's what's happening across your engineering org." />
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Stat label="Active projects" value="24" delta="5 shipping this month" />
-        <Stat label="Engineers" value="186" delta="across 14 teams" />
+      <PageHeader title={`Welcome back, ${session.name.split(" ")[0]}`} sub="Here's what's happening across your engineering org." action={<Pill>Sample data</Pill>} />
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+        <Stat label="Total projects" value={String(projects.length)} delta={`${projects.filter((p) => p.health !== "Healthy").length} need attention`} />
+        <Stat label="Active repositories" value={String(repos.length)} delta={`${repos.reduce((a, r) => a + r.prs, 0)} open PRs`} />
         <Stat label="Open tasks" value="1,204" delta="312 in progress" />
-        <Stat label="Monthly cost" value="$1.74M" delta="4% under budget" />
+        <Stat label="Open bugs" value={String(bugs.filter((b) => b.status !== "Verified").length)} delta={`${bugs.filter((b) => b.sev === "Critical").length} critical`} />
+        <Stat label="Testing pass rate" value={`${(100 * passed / (passed + failed)).toFixed(1)}%`} delta={`${failed} failing tests`} />
       </div>
       <p className="mt-8 mb-3 text-label text-muted-foreground">Drag widgets to rearrange</p>
       <div className="grid gap-4 md:grid-cols-2">
