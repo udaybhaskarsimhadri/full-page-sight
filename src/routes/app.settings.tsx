@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Panel, PageHeader } from "@/components/devpulse/ui";
 
@@ -12,14 +13,14 @@ function Page() {
     <>
       <PageHeader title="Settings" sub="Manage your profile, workspace and notifications." />
       <div className="grid gap-4 lg:grid-cols-2">
-        <Panel title="Profile">
-          <div className="space-y-3"><input className={field} defaultValue="Uday Bhaskar" /><input className={field} defaultValue="uday@acme.com" />
-            <Button>Save changes</Button></div>
+        <Panel title="Workspace">
+          <div className="space-y-3"><input className={field} defaultValue="Acme Engineering" aria-label="Workspace name" /><input className={field} defaultValue="Asia/Kolkata" aria-label="Timezone" />
+            <Button onClick={() => toast.success("Settings saved")}>Save changes</Button></div>
         </Panel>
         <Panel title="Notifications">
           <div className="space-y-4">{toggles.map((t, i) => (
             <label key={t} className="flex cursor-pointer items-center justify-between text-sm">{t}
-              <input type="checkbox" defaultChecked={i < 3} className="peer sr-only" />
+              <input type="checkbox" defaultChecked={i < 3} onChange={(e) => toast(`${t} ${e.target.checked ? "enabled" : "disabled"}`)} className="peer sr-only" />
               <span className="relative h-6 w-11 rounded-full bg-secondary transition after:absolute after:left-1 after:top-1 after:h-4 after:w-4 after:rounded-full after:bg-muted-foreground after:transition peer-checked:bg-foreground peer-checked:after:translate-x-5 peer-checked:after:bg-background" />
             </label>))}</div>
         </Panel>

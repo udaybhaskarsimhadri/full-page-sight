@@ -11,7 +11,7 @@ const reports = ["Executive summary", "Sprint report", "Quality & testing", "Bug
 function csv() {
   const rows = [["Project", "Lead", "Progress", "Health", "Budget"], ...projects.map((p) => [p.name, p.lead, `${p.progress}%`, p.health, p.budget])];
   const blob = new Blob([rows.map((r) => r.join(",")).join("\n")], { type: "text/csv" });
-  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "devpulse-report.csv"; a.click();
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "devpulse-report.csv"; a.click(); URL.revokeObjectURL(a.href);
 }
 
 function Page() {

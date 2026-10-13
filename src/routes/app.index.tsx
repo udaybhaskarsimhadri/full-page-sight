@@ -26,6 +26,7 @@ const widgets: Record<string, { title: string; wide?: boolean; body: ReactNode }
 };
 
 function Dashboard() {
+  const { session } = Route.useRouteContext();
   const [order, setOrder] = useState(Object.keys(widgets));
   const [drag, setDrag] = useState<string | null>(null);
   const drop = (target: string) => {
@@ -36,7 +37,7 @@ function Dashboard() {
   };
   return (
     <>
-      <PageHeader title="Good afternoon, Uday" sub="Here's what's happening across your engineering org." />
+      <PageHeader title={`Welcome back, ${session.name.split(" ")[0]}`} sub="Here's what's happening across your engineering org." />
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Stat label="Active projects" value="24" delta="5 shipping this month" />
         <Stat label="Engineers" value="186" delta="across 14 teams" />

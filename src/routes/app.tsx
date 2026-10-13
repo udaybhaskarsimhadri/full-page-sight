@@ -1,5 +1,5 @@
 import { createFileRoute, Link, Outlet, redirect, useNavigate, useRouter } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { toast } from "sonner";
 import {
   LayoutGrid, FolderKanban, ClipboardList, Timer, ListTodo, Bug, FlaskConical, BarChart3, Layers, Code2,
@@ -11,9 +11,9 @@ import { getSession, logout } from "@/lib/auth";
 
 export const Route = createFileRoute("/app")({
   ssr: false,
-  beforeLoad: ({ location }) => {
+  beforeLoad: () => {
     const session = getSession();
-    if (!session) throw redirect({ to: "/login", search: { redirect: location.href } });
+    if (!session) throw redirect({ to: "/login" });
     return { session };
   },
   pendingComponent: AuthLoading,
@@ -77,7 +77,7 @@ function AppLayout() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  const search = (e: React.FormEvent) => {
+  const search = (e: FormEvent) => {
     e.preventDefault();
     const hit = items.find((i) => i.l.toLowerCase().includes(q.trim().toLowerCase()));
     if (q.trim() && hit) { navigate({ to: hit.to }); setQ(""); }
