@@ -10,33 +10,246 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as AppRouteImport } from './routes/app'
+import { Route as DocsRouteImport } from './routes/docs'
+import { Route as FeaturesRouteImport } from './routes/features'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as SignupRouteImport } from './routes/signup'
+import { Route as AppIndexRouteImport } from './routes/app.index'
+import { Route as AppBugsRouteImport } from './routes/app.bugs'
+import { Route as AppCodeRouteImport } from './routes/app.code'
+import { Route as AppProjectsRouteImport } from './routes/app.projects'
+import { Route as AppReportsRouteImport } from './routes/app.reports'
+import { Route as AppSettingsRouteImport } from './routes/app.settings'
+import { Route as AppSprintsRouteImport } from './routes/app.sprints'
+import { Route as AppStackRouteImport } from './routes/app.stack'
+import { Route as AppTasksRouteImport } from './routes/app.tasks'
+import { Route as AppTestingRouteImport } from './routes/app.testing'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppRoute = AppRouteImport.update({
+  id: '/app',
+  path: '/app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsRoute = DocsRouteImport.update({
+  id: '/docs',
+  path: '/docs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FeaturesRoute = FeaturesRouteImport.update({
+  id: '/features',
+  path: '/features',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppIndexRoute = AppIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppBugsRoute = AppBugsRouteImport.update({
+  id: '/bugs',
+  path: '/bugs',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCodeRoute = AppCodeRouteImport.update({
+  id: '/code',
+  path: '/code',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppProjectsRoute = AppProjectsRouteImport.update({
+  id: '/projects',
+  path: '/projects',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppReportsRoute = AppReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSettingsRoute = AppSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSprintsRoute = AppSprintsRouteImport.update({
+  id: '/sprints',
+  path: '/sprints',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppStackRoute = AppStackRouteImport.update({
+  id: '/stack',
+  path: '/stack',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppTasksRoute = AppTasksRouteImport.update({
+  id: '/tasks',
+  path: '/tasks',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppTestingRoute = AppTestingRouteImport.update({
+  id: '/testing',
+  path: '/testing',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/app': typeof AppRouteWithChildren
+  '/docs': typeof DocsRoute
+  '/features': typeof FeaturesRoute
+  '/login': typeof LoginRoute
+  '/pricing': typeof PricingRoute
+  '/signup': typeof SignupRoute
+  '/app/bugs': typeof AppBugsRoute
+  '/app/code': typeof AppCodeRoute
+  '/app/projects': typeof AppProjectsRoute
+  '/app/reports': typeof AppReportsRoute
+  '/app/settings': typeof AppSettingsRoute
+  '/app/sprints': typeof AppSprintsRoute
+  '/app/stack': typeof AppStackRoute
+  '/app/tasks': typeof AppTasksRoute
+  '/app/testing': typeof AppTestingRoute
+  '/app/': typeof AppIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/docs': typeof DocsRoute
+  '/features': typeof FeaturesRoute
+  '/login': typeof LoginRoute
+  '/pricing': typeof PricingRoute
+  '/signup': typeof SignupRoute
+  '/app/bugs': typeof AppBugsRoute
+  '/app/code': typeof AppCodeRoute
+  '/app/projects': typeof AppProjectsRoute
+  '/app/reports': typeof AppReportsRoute
+  '/app/settings': typeof AppSettingsRoute
+  '/app/sprints': typeof AppSprintsRoute
+  '/app/stack': typeof AppStackRoute
+  '/app/tasks': typeof AppTasksRoute
+  '/app/testing': typeof AppTestingRoute
+  '/app': typeof AppIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/app': typeof AppRouteWithChildren
+  '/docs': typeof DocsRoute
+  '/features': typeof FeaturesRoute
+  '/login': typeof LoginRoute
+  '/pricing': typeof PricingRoute
+  '/signup': typeof SignupRoute
+  '/app/bugs': typeof AppBugsRoute
+  '/app/code': typeof AppCodeRoute
+  '/app/projects': typeof AppProjectsRoute
+  '/app/reports': typeof AppReportsRoute
+  '/app/settings': typeof AppSettingsRoute
+  '/app/sprints': typeof AppSprintsRoute
+  '/app/stack': typeof AppStackRoute
+  '/app/tasks': typeof AppTasksRoute
+  '/app/testing': typeof AppTestingRoute
+  '/app/': typeof AppIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/app'
+    | '/docs'
+    | '/features'
+    | '/login'
+    | '/pricing'
+    | '/signup'
+    | '/app/bugs'
+    | '/app/code'
+    | '/app/projects'
+    | '/app/reports'
+    | '/app/settings'
+    | '/app/sprints'
+    | '/app/stack'
+    | '/app/tasks'
+    | '/app/testing'
+    | '/app/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/about'
+    | '/docs'
+    | '/features'
+    | '/login'
+    | '/pricing'
+    | '/signup'
+    | '/app/bugs'
+    | '/app/code'
+    | '/app/projects'
+    | '/app/reports'
+    | '/app/settings'
+    | '/app/sprints'
+    | '/app/stack'
+    | '/app/tasks'
+    | '/app/testing'
+    | '/app'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/app'
+    | '/docs'
+    | '/features'
+    | '/login'
+    | '/pricing'
+    | '/signup'
+    | '/app/bugs'
+    | '/app/code'
+    | '/app/projects'
+    | '/app/reports'
+    | '/app/settings'
+    | '/app/sprints'
+    | '/app/stack'
+    | '/app/tasks'
+    | '/app/testing'
+    | '/app/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  AppRoute: typeof AppRouteWithChildren
+  DocsRoute: typeof DocsRoute
+  FeaturesRoute: typeof FeaturesRoute
+  LoginRoute: typeof LoginRoute
+  PricingRoute: typeof PricingRoute
+  SignupRoute: typeof SignupRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +261,165 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app': {
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs': {
+      id: '/docs'
+      path: '/docs'
+      fullPath: '/docs'
+      preLoaderRoute: typeof DocsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/features': {
+      id: '/features'
+      path: '/features'
+      fullPath: '/features'
+      preLoaderRoute: typeof FeaturesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app/': {
+      id: '/app/'
+      path: '/'
+      fullPath: '/app/'
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/bugs': {
+      id: '/app/bugs'
+      path: '/bugs'
+      fullPath: '/app/bugs'
+      preLoaderRoute: typeof AppBugsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/code': {
+      id: '/app/code'
+      path: '/code'
+      fullPath: '/app/code'
+      preLoaderRoute: typeof AppCodeRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/projects': {
+      id: '/app/projects'
+      path: '/projects'
+      fullPath: '/app/projects'
+      preLoaderRoute: typeof AppProjectsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/reports': {
+      id: '/app/reports'
+      path: '/reports'
+      fullPath: '/app/reports'
+      preLoaderRoute: typeof AppReportsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/settings': {
+      id: '/app/settings'
+      path: '/settings'
+      fullPath: '/app/settings'
+      preLoaderRoute: typeof AppSettingsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/sprints': {
+      id: '/app/sprints'
+      path: '/sprints'
+      fullPath: '/app/sprints'
+      preLoaderRoute: typeof AppSprintsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/stack': {
+      id: '/app/stack'
+      path: '/stack'
+      fullPath: '/app/stack'
+      preLoaderRoute: typeof AppStackRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/tasks': {
+      id: '/app/tasks'
+      path: '/tasks'
+      fullPath: '/app/tasks'
+      preLoaderRoute: typeof AppTasksRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/testing': {
+      id: '/app/testing'
+      path: '/testing'
+      fullPath: '/app/testing'
+      preLoaderRoute: typeof AppTestingRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
+interface AppRouteChildren {
+  AppBugsRoute: typeof AppBugsRoute
+  AppCodeRoute: typeof AppCodeRoute
+  AppProjectsRoute: typeof AppProjectsRoute
+  AppReportsRoute: typeof AppReportsRoute
+  AppSettingsRoute: typeof AppSettingsRoute
+  AppSprintsRoute: typeof AppSprintsRoute
+  AppStackRoute: typeof AppStackRoute
+  AppTasksRoute: typeof AppTasksRoute
+  AppTestingRoute: typeof AppTestingRoute
+  AppIndexRoute: typeof AppIndexRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppBugsRoute: AppBugsRoute,
+  AppCodeRoute: AppCodeRoute,
+  AppProjectsRoute: AppProjectsRoute,
+  AppReportsRoute: AppReportsRoute,
+  AppSettingsRoute: AppSettingsRoute,
+  AppSprintsRoute: AppSprintsRoute,
+  AppStackRoute: AppStackRoute,
+  AppTasksRoute: AppTasksRoute,
+  AppTestingRoute: AppTestingRoute,
+  AppIndexRoute: AppIndexRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  AppRoute: AppRouteWithChildren,
+  DocsRoute: DocsRoute,
+  FeaturesRoute: FeaturesRoute,
+  LoginRoute: LoginRoute,
+  PricingRoute: PricingRoute,
+  SignupRoute: SignupRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
