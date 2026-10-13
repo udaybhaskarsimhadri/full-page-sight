@@ -37,7 +37,6 @@ export function AITool({ mode, initial = "", autoRun = false }: { mode: AIMode; 
 
   useEffect(() => {
     if (autoRun && initial && !ran.current) { ran.current = true; void run(); }
-    return () => ctrl.current?.abort();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
