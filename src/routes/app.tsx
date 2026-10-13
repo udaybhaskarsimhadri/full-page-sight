@@ -1,11 +1,8 @@
 import { createFileRoute, Link, Outlet, redirect, useNavigate, useRouter } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { toast } from "sonner";
-import {
-  LayoutGrid, FolderKanban, ClipboardList, Timer, ListTodo, Bug, FlaskConical, BarChart3, Layers, Code2,
-  FileBarChart, Sparkles, Settings, UserRound, Search, Bell, LogOut,
-} from "lucide-react";
-import { Logo } from "@/components/devpulse/brand";
+import { Search, Bell } from "lucide-react";
+import { AppSidebar, navPages } from "@/components/devpulse/app-sidebar";
 import { Assistant } from "@/components/devpulse/assistant";
 import { AIChatProvider } from "@/components/devpulse/ai-chat";
 import { getSession, logout } from "@/lib/auth";
@@ -38,23 +35,6 @@ function AuthLoading() {
   );
 }
 
-const items = [
-  { to: "/app", l: "Dashboard", i: LayoutGrid },
-  { to: "/app/projects", l: "Projects", i: FolderKanban },
-  { to: "/app/requirements", l: "Requirements", i: ClipboardList },
-  { to: "/app/sprints", l: "Sprint", i: Timer },
-  { to: "/app/tasks", l: "Tasks", i: ListTodo },
-  { to: "/app/bugs", l: "Bugs", i: Bug },
-  { to: "/app/testing", l: "Testing", i: FlaskConical },
-  { to: "/app/analytics", l: "Analytics", i: BarChart3 },
-  { to: "/app/code", l: "Code Analytics", i: Code2 },
-  { to: "/app/stack", l: "Tech Stack", i: Layers },
-  { to: "/app/reports", l: "Reports", i: FileBarChart },
-  { to: "/app/ai", l: "AI Assistant", i: Sparkles },
-  { to: "/app/settings", l: "Settings", i: Settings },
-  { to: "/app/profile", l: "Profile", i: UserRound },
-] as const;
-
 const notifications = [
   "BUG-221 escalated to Critical",
   "Sprint 24 review scheduled for Friday",
@@ -68,6 +48,24 @@ function AppLayout() {
   const [q, setQ] = useState("");
   const [bell, setBell] = useState(false);
   const searchRef = useRef<HTMLInputElement>(null);
+  const [collapsed, setCollapsed] = useState(false);
+  const [narrow, setNarrow] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 1023px)");
+    const saved = window.localStorage.getItem("dp_sidebar");
+    setNarrow(mq.matches);
+    setCollapsed(mq.matches || saved === "collapsed");
+    const onChange = () => { setNarrow(mq.matches); if (mq.matches) setCollapsed(true); };
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+
+  const toggle = () => setCollapsed((c) => {
+    const next = !c;
+    if (!narrow) window.localStorage.setItem("dp_sidebar", next ? "collapsed" : "expanded");
+    return next;
+  });
   const initials = session.name.split(" ").map((p) => p[0]).join("").slice(0, 2).toUpperCase();
 
   useEffect(() => {
@@ -80,8 +78,8 @@ function AppLayout() {
 
   const search = (e: FormEvent) => {
     e.preventDefault();
-    const hit = items.find((i) => i.l.toLowerCase().includes(q.trim().toLowerCase()));
-    if (q.trim() && hit) { navigate({ to: hit.to }); setQ(""); }
+    const hit = navPages.find((i) => i.l.toLowerCase().includes(q.trim().toLowerCase()));
+    if (q.trim() && hit) { navigate({ to: hit.to, ...(hit.tool ? { search: { tool: hit.tool } } : {}) }); setQ(""); }
     else toast("No matching page", { description: "Try Projects, Bugs, Sprint or Reports." });
   };
 
@@ -93,23 +91,10 @@ function AppLayout() {
 
   return (
     <AIChatProvider>
-    <div className="flex min-h-screen">
-      <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col overflow-y-auto border-r border-line bg-sidebar p-4 lg:flex">
-        <div className="px-2 py-3"><Logo /></div>
-        <nav className="mt-6 space-y-0.5">
-          {items.map(({ to, l, i: I }) => (
-            <Link key={to} to={to} activeOptions={{ exact: to === "/app" }}
-              className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-muted-foreground transition hover:bg-sidebar-accent hover:text-foreground"
-              activeProps={{ className: "bg-sidebar-accent text-foreground" }}>
-              <I className="h-4 w-4" /> {l}
-            </Link>
-          ))}
-        </nav>
-        <button onClick={signOut} className="mt-auto flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-muted-foreground transition hover:bg-sidebar-accent hover:text-foreground">
-          <LogOut className="h-4 w-4" /> Log out
-        </button>
-      </aside>
-      <div className="min-w-0 flex-1">
+    <div className="min-h-screen">
+      <AppSidebar collapsed={collapsed} onToggle={toggle} onLogout={signOut} />
+      {narrow && !collapsed && <button aria-label="Close sidebar" onClick={toggle} className="fixed inset-0 z-40 bg-background/60 backdrop-blur-sm fade-up" />}
+      <div className="min-w-0 transition-[margin] duration-300 ease-[cubic-bezier(.2,.8,.2,1)]" style={{ marginLeft: narrow || collapsed ? 80 : 280 }}>
         <header className="sticky top-0 z-40 flex h-16 items-center gap-4 border-b border-line bg-background/70 px-6 backdrop-blur-xl">
           <form onSubmit={search} className="flex h-10 max-w-md flex-1 items-center gap-2 rounded-xl border border-line bg-surface px-3 text-sm text-muted-foreground">
             <Search className="h-4 w-4" />
@@ -126,14 +111,8 @@ function AppLayout() {
               </div>
             )}
             <Link to="/app/profile" aria-label="Profile" className="grid h-9 w-9 place-items-center rounded-full bg-foreground text-sm font-semibold text-background">{initials}</Link>
-            <button aria-label="Log out" onClick={signOut} className="grid h-10 w-10 place-items-center rounded-xl border border-line text-muted-foreground hover:text-foreground lg:hidden"><LogOut className="h-4 w-4" /></button>
           </div>
         </header>
-        <nav className="flex gap-1 overflow-x-auto border-b border-line px-4 py-2 lg:hidden">
-          {items.map(({ to, l }) => (
-            <Link key={to} to={to} activeOptions={{ exact: to === "/app" }} className="whitespace-nowrap rounded-lg px-3 py-1.5 text-sm text-muted-foreground" activeProps={{ className: "bg-secondary text-foreground" }}>{l}</Link>
-          ))}
-        </nav>
         <main className="mx-auto max-w-7xl p-6 md:p-10"><Outlet /></main>
       </div>
       <Assistant />
