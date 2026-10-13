@@ -26,11 +26,13 @@ import { Route as AppCodeRouteImport } from './routes/app.code'
 import { Route as AppProfileRouteImport } from './routes/app.profile'
 import { Route as AppProjectsRouteImport } from './routes/app.projects'
 import { Route as AppReportsRouteImport } from './routes/app.reports'
+import { Route as AppReposRouteImport } from './routes/app.repos'
 import { Route as AppRequirementsRouteImport } from './routes/app.requirements'
 import { Route as AppSettingsRouteImport } from './routes/app.settings'
 import { Route as AppSprintsRouteImport } from './routes/app.sprints'
 import { Route as AppStackRouteImport } from './routes/app.stack'
 import { Route as AppTasksRouteImport } from './routes/app.tasks'
+import { Route as AppTeamsRouteImport } from './routes/app.teams'
 import { Route as AppTestingRouteImport } from './routes/app.testing'
 
 const IndexRoute = IndexRouteImport.update({
@@ -118,6 +120,11 @@ const AppReportsRoute = AppReportsRouteImport.update({
   path: '/reports',
   getParentRoute: () => AppRoute,
 } as any)
+const AppReposRoute = AppReposRouteImport.update({
+  id: '/repos',
+  path: '/repos',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppRequirementsRoute = AppRequirementsRouteImport.update({
   id: '/requirements',
   path: '/requirements',
@@ -143,6 +150,11 @@ const AppTasksRoute = AppTasksRouteImport.update({
   path: '/tasks',
   getParentRoute: () => AppRoute,
 } as any)
+const AppTeamsRoute = AppTeamsRouteImport.update({
+  id: '/teams',
+  path: '/teams',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppTestingRoute = AppTestingRouteImport.update({
   id: '/testing',
   path: '/testing',
@@ -166,11 +178,13 @@ export interface FileRoutesByFullPath {
   '/app/profile': typeof AppProfileRoute
   '/app/projects': typeof AppProjectsRoute
   '/app/reports': typeof AppReportsRoute
+  '/app/repos': typeof AppReposRoute
   '/app/requirements': typeof AppRequirementsRoute
   '/app/settings': typeof AppSettingsRoute
   '/app/sprints': typeof AppSprintsRoute
   '/app/stack': typeof AppStackRoute
   '/app/tasks': typeof AppTasksRoute
+  '/app/teams': typeof AppTeamsRoute
   '/app/testing': typeof AppTestingRoute
   '/app/': typeof AppIndexRoute
 }
@@ -190,11 +204,13 @@ export interface FileRoutesByTo {
   '/app/profile': typeof AppProfileRoute
   '/app/projects': typeof AppProjectsRoute
   '/app/reports': typeof AppReportsRoute
+  '/app/repos': typeof AppReposRoute
   '/app/requirements': typeof AppRequirementsRoute
   '/app/settings': typeof AppSettingsRoute
   '/app/sprints': typeof AppSprintsRoute
   '/app/stack': typeof AppStackRoute
   '/app/tasks': typeof AppTasksRoute
+  '/app/teams': typeof AppTeamsRoute
   '/app/testing': typeof AppTestingRoute
   '/app': typeof AppIndexRoute
 }
@@ -216,11 +232,13 @@ export interface FileRoutesById {
   '/app/profile': typeof AppProfileRoute
   '/app/projects': typeof AppProjectsRoute
   '/app/reports': typeof AppReportsRoute
+  '/app/repos': typeof AppReposRoute
   '/app/requirements': typeof AppRequirementsRoute
   '/app/settings': typeof AppSettingsRoute
   '/app/sprints': typeof AppSprintsRoute
   '/app/stack': typeof AppStackRoute
   '/app/tasks': typeof AppTasksRoute
+  '/app/teams': typeof AppTeamsRoute
   '/app/testing': typeof AppTestingRoute
   '/app/': typeof AppIndexRoute
 }
@@ -243,11 +261,13 @@ export interface FileRouteTypes {
     | '/app/profile'
     | '/app/projects'
     | '/app/reports'
+    | '/app/repos'
     | '/app/requirements'
     | '/app/settings'
     | '/app/sprints'
     | '/app/stack'
     | '/app/tasks'
+    | '/app/teams'
     | '/app/testing'
     | '/app/'
   fileRoutesByTo: FileRoutesByTo
@@ -267,11 +287,13 @@ export interface FileRouteTypes {
     | '/app/profile'
     | '/app/projects'
     | '/app/reports'
+    | '/app/repos'
     | '/app/requirements'
     | '/app/settings'
     | '/app/sprints'
     | '/app/stack'
     | '/app/tasks'
+    | '/app/teams'
     | '/app/testing'
     | '/app'
   id:
@@ -292,11 +314,13 @@ export interface FileRouteTypes {
     | '/app/profile'
     | '/app/projects'
     | '/app/reports'
+    | '/app/repos'
     | '/app/requirements'
     | '/app/settings'
     | '/app/sprints'
     | '/app/stack'
     | '/app/tasks'
+    | '/app/teams'
     | '/app/testing'
     | '/app/'
   fileRoutesById: FileRoutesById
@@ -434,6 +458,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppReportsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/repos': {
+      id: '/app/repos'
+      path: '/repos'
+      fullPath: '/app/repos'
+      preLoaderRoute: typeof AppReposRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/requirements': {
       id: '/app/requirements'
       path: '/requirements'
@@ -469,6 +500,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppTasksRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/teams': {
+      id: '/app/teams'
+      path: '/teams'
+      fullPath: '/app/teams'
+      preLoaderRoute: typeof AppTeamsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/testing': {
       id: '/app/testing'
       path: '/testing'
@@ -487,11 +525,13 @@ interface AppRouteChildren {
   AppProfileRoute: typeof AppProfileRoute
   AppProjectsRoute: typeof AppProjectsRoute
   AppReportsRoute: typeof AppReportsRoute
+  AppReposRoute: typeof AppReposRoute
   AppRequirementsRoute: typeof AppRequirementsRoute
   AppSettingsRoute: typeof AppSettingsRoute
   AppSprintsRoute: typeof AppSprintsRoute
   AppStackRoute: typeof AppStackRoute
   AppTasksRoute: typeof AppTasksRoute
+  AppTeamsRoute: typeof AppTeamsRoute
   AppTestingRoute: typeof AppTestingRoute
   AppIndexRoute: typeof AppIndexRoute
 }
@@ -504,11 +544,13 @@ const AppRouteChildren: AppRouteChildren = {
   AppProfileRoute: AppProfileRoute,
   AppProjectsRoute: AppProjectsRoute,
   AppReportsRoute: AppReportsRoute,
+  AppReposRoute: AppReposRoute,
   AppRequirementsRoute: AppRequirementsRoute,
   AppSettingsRoute: AppSettingsRoute,
   AppSprintsRoute: AppSprintsRoute,
   AppStackRoute: AppStackRoute,
   AppTasksRoute: AppTasksRoute,
+  AppTeamsRoute: AppTeamsRoute,
   AppTestingRoute: AppTestingRoute,
   AppIndexRoute: AppIndexRoute,
 }
