@@ -21,7 +21,7 @@ function Page() {
   const [t, setT] = useState("");
   const add = (e: FormEvent) => {
     e.preventDefault();
-    if (!t.trim()) return toast.error("Describe the requirement first.");
+    if (!t.trim()) { toast.error("Describe the requirement first."); return; }
     setList((l) => [{ id: `REQ-${122 + l.length - seed.length}`, t: t.trim(), pr: "Should", status: "Draft", linked: 0 }, ...l]);
     setT(""); toast.success("Requirement added");
   };

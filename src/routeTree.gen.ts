@@ -18,10 +18,14 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as AppIndexRouteImport } from './routes/app.index'
+import { Route as AppAiRouteImport } from './routes/app.ai'
+import { Route as AppAnalyticsRouteImport } from './routes/app.analytics'
 import { Route as AppBugsRouteImport } from './routes/app.bugs'
 import { Route as AppCodeRouteImport } from './routes/app.code'
+import { Route as AppProfileRouteImport } from './routes/app.profile'
 import { Route as AppProjectsRouteImport } from './routes/app.projects'
 import { Route as AppReportsRouteImport } from './routes/app.reports'
+import { Route as AppRequirementsRouteImport } from './routes/app.requirements'
 import { Route as AppSettingsRouteImport } from './routes/app.settings'
 import { Route as AppSprintsRouteImport } from './routes/app.sprints'
 import { Route as AppStackRouteImport } from './routes/app.stack'
@@ -73,6 +77,16 @@ const AppIndexRoute = AppIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAiRoute = AppAiRouteImport.update({
+  id: '/ai',
+  path: '/ai',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAnalyticsRoute = AppAnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppBugsRoute = AppBugsRouteImport.update({
   id: '/bugs',
   path: '/bugs',
@@ -83,6 +97,11 @@ const AppCodeRoute = AppCodeRouteImport.update({
   path: '/code',
   getParentRoute: () => AppRoute,
 } as any)
+const AppProfileRoute = AppProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppProjectsRoute = AppProjectsRouteImport.update({
   id: '/projects',
   path: '/projects',
@@ -91,6 +110,11 @@ const AppProjectsRoute = AppProjectsRouteImport.update({
 const AppReportsRoute = AppReportsRouteImport.update({
   id: '/reports',
   path: '/reports',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppRequirementsRoute = AppRequirementsRouteImport.update({
+  id: '/requirements',
+  path: '/requirements',
   getParentRoute: () => AppRoute,
 } as any)
 const AppSettingsRoute = AppSettingsRouteImport.update({
@@ -128,10 +152,14 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
   '/signup': typeof SignupRoute
+  '/app/ai': typeof AppAiRoute
+  '/app/analytics': typeof AppAnalyticsRoute
   '/app/bugs': typeof AppBugsRoute
   '/app/code': typeof AppCodeRoute
+  '/app/profile': typeof AppProfileRoute
   '/app/projects': typeof AppProjectsRoute
   '/app/reports': typeof AppReportsRoute
+  '/app/requirements': typeof AppRequirementsRoute
   '/app/settings': typeof AppSettingsRoute
   '/app/sprints': typeof AppSprintsRoute
   '/app/stack': typeof AppStackRoute
@@ -147,10 +175,14 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
   '/signup': typeof SignupRoute
+  '/app/ai': typeof AppAiRoute
+  '/app/analytics': typeof AppAnalyticsRoute
   '/app/bugs': typeof AppBugsRoute
   '/app/code': typeof AppCodeRoute
+  '/app/profile': typeof AppProfileRoute
   '/app/projects': typeof AppProjectsRoute
   '/app/reports': typeof AppReportsRoute
+  '/app/requirements': typeof AppRequirementsRoute
   '/app/settings': typeof AppSettingsRoute
   '/app/sprints': typeof AppSprintsRoute
   '/app/stack': typeof AppStackRoute
@@ -168,10 +200,14 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
   '/signup': typeof SignupRoute
+  '/app/ai': typeof AppAiRoute
+  '/app/analytics': typeof AppAnalyticsRoute
   '/app/bugs': typeof AppBugsRoute
   '/app/code': typeof AppCodeRoute
+  '/app/profile': typeof AppProfileRoute
   '/app/projects': typeof AppProjectsRoute
   '/app/reports': typeof AppReportsRoute
+  '/app/requirements': typeof AppRequirementsRoute
   '/app/settings': typeof AppSettingsRoute
   '/app/sprints': typeof AppSprintsRoute
   '/app/stack': typeof AppStackRoute
@@ -190,10 +226,14 @@ export interface FileRouteTypes {
     | '/login'
     | '/pricing'
     | '/signup'
+    | '/app/ai'
+    | '/app/analytics'
     | '/app/bugs'
     | '/app/code'
+    | '/app/profile'
     | '/app/projects'
     | '/app/reports'
+    | '/app/requirements'
     | '/app/settings'
     | '/app/sprints'
     | '/app/stack'
@@ -209,10 +249,14 @@ export interface FileRouteTypes {
     | '/login'
     | '/pricing'
     | '/signup'
+    | '/app/ai'
+    | '/app/analytics'
     | '/app/bugs'
     | '/app/code'
+    | '/app/profile'
     | '/app/projects'
     | '/app/reports'
+    | '/app/requirements'
     | '/app/settings'
     | '/app/sprints'
     | '/app/stack'
@@ -229,10 +273,14 @@ export interface FileRouteTypes {
     | '/login'
     | '/pricing'
     | '/signup'
+    | '/app/ai'
+    | '/app/analytics'
     | '/app/bugs'
     | '/app/code'
+    | '/app/profile'
     | '/app/projects'
     | '/app/reports'
+    | '/app/requirements'
     | '/app/settings'
     | '/app/sprints'
     | '/app/stack'
@@ -317,6 +365,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/ai': {
+      id: '/app/ai'
+      path: '/ai'
+      fullPath: '/app/ai'
+      preLoaderRoute: typeof AppAiRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/analytics': {
+      id: '/app/analytics'
+      path: '/analytics'
+      fullPath: '/app/analytics'
+      preLoaderRoute: typeof AppAnalyticsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/bugs': {
       id: '/app/bugs'
       path: '/bugs'
@@ -331,6 +393,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCodeRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/profile': {
+      id: '/app/profile'
+      path: '/profile'
+      fullPath: '/app/profile'
+      preLoaderRoute: typeof AppProfileRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/projects': {
       id: '/app/projects'
       path: '/projects'
@@ -343,6 +412,13 @@ declare module '@tanstack/react-router' {
       path: '/reports'
       fullPath: '/app/reports'
       preLoaderRoute: typeof AppReportsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/requirements': {
+      id: '/app/requirements'
+      path: '/requirements'
+      fullPath: '/app/requirements'
+      preLoaderRoute: typeof AppRequirementsRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/settings': {
@@ -384,10 +460,14 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppRouteChildren {
+  AppAiRoute: typeof AppAiRoute
+  AppAnalyticsRoute: typeof AppAnalyticsRoute
   AppBugsRoute: typeof AppBugsRoute
   AppCodeRoute: typeof AppCodeRoute
+  AppProfileRoute: typeof AppProfileRoute
   AppProjectsRoute: typeof AppProjectsRoute
   AppReportsRoute: typeof AppReportsRoute
+  AppRequirementsRoute: typeof AppRequirementsRoute
   AppSettingsRoute: typeof AppSettingsRoute
   AppSprintsRoute: typeof AppSprintsRoute
   AppStackRoute: typeof AppStackRoute
@@ -397,10 +477,14 @@ interface AppRouteChildren {
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppAiRoute: AppAiRoute,
+  AppAnalyticsRoute: AppAnalyticsRoute,
   AppBugsRoute: AppBugsRoute,
   AppCodeRoute: AppCodeRoute,
+  AppProfileRoute: AppProfileRoute,
   AppProjectsRoute: AppProjectsRoute,
   AppReportsRoute: AppReportsRoute,
+  AppRequirementsRoute: AppRequirementsRoute,
   AppSettingsRoute: AppSettingsRoute,
   AppSprintsRoute: AppSprintsRoute,
   AppStackRoute: AppStackRoute,

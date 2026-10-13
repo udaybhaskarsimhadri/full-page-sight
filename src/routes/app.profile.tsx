@@ -14,7 +14,7 @@ function Page() {
   const router = useRouter();
   const [name, setName] = useState(session.name);
   const save = async () => {
-    if (!name.trim()) return toast.error("Name can't be empty.");
+    if (!name.trim()) { toast.error("Name can't be empty."); return; }
     updateName(name.trim()); await router.invalidate(); toast.success("Profile updated");
   };
   return (
