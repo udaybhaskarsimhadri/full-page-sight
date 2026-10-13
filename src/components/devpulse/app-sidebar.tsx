@@ -3,40 +3,44 @@ import type { ReactNode } from "react";
 import {
   LayoutGrid, FolderKanban, ClipboardList, Timer, ListTodo, Bug, FlaskConical, BarChart3, Layers, Code2,
   FileBarChart, Sparkles, Settings, UserRound, LogOut, FileCode2, CalendarRange, Lightbulb, SearchCode,
-  ShieldCheck, TestTubeDiagonal, BookOpenText, NotebookPen, PanelLeftClose, PanelLeftOpen,
+  ShieldCheck, TestTubeDiagonal, BookOpenText, NotebookPen, PanelLeftClose, PanelLeftOpen, Users, GitBranch,
   type LucideIcon,
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import type { AIMode } from "@/lib/ai/prompts";
+import type { Role } from "@/lib/roles";
 import { cn } from "@/lib/utils";
 
-type Item = { l: string; i: LucideIcon; to: string; tool?: AIMode };
+type Item = { l: string; i: LucideIcon; to: string; tool?: AIMode; roles?: Role[] };
+const M: Role[] = ["manager"], MD: Role[] = ["manager", "developer"], MT: Role[] = ["manager", "tester"];
 const sections: { h: string; items: Item[] }[] = [
   { h: "Main", items: [{ l: "Dashboard", i: LayoutGrid, to: "/app" }] },
   { h: "Project Management", items: [
     { l: "Projects", i: FolderKanban, to: "/app/projects" },
-    { l: "Requirements", i: ClipboardList, to: "/app/requirements" },
-    { l: "Sprint Management", i: Timer, to: "/app/sprints" },
+    { l: "Teams", i: Users, to: "/app/teams" },
+    { l: "GitHub Repositories", i: GitBranch, to: "/app/repos" },
+    { l: "Requirements", i: ClipboardList, to: "/app/requirements", roles: MT },
+    { l: "Sprint Management", i: Timer, to: "/app/sprints", roles: MD },
     { l: "Tasks", i: ListTodo, to: "/app/tasks" },
     { l: "Bug Tracking", i: Bug, to: "/app/bugs" },
-    { l: "Test Management", i: FlaskConical, to: "/app/testing" },
+    { l: "Test Management", i: FlaskConical, to: "/app/testing", roles: MT },
   ] },
   { h: "Analytics", items: [
-    { l: "Project Analytics", i: BarChart3, to: "/app/analytics" },
-    { l: "Code Analytics", i: Code2, to: "/app/code" },
-    { l: "Technology Stack Analyzer", i: Layers, to: "/app/stack" },
-    { l: "Reports", i: FileBarChart, to: "/app/reports" },
+    { l: "Project Analytics", i: BarChart3, to: "/app/analytics", roles: MT },
+    { l: "Code Analytics", i: Code2, to: "/app/code", roles: MD },
+    { l: "Technology Stack Analyzer", i: Layers, to: "/app/stack", roles: MD },
+    { l: "Reports", i: FileBarChart, to: "/app/reports", roles: MT },
   ] },
   { h: "AI Tools", items: [
     { l: "AI Assistant", i: Sparkles, to: "/app/ai", tool: "chat" },
-    { l: "AI Requirement Generator", i: FileCode2, to: "/app/ai", tool: "requirements" },
-    { l: "AI Sprint Planner", i: CalendarRange, to: "/app/ai", tool: "sprint" },
-    { l: "AI Project Advisor", i: Lightbulb, to: "/app/ai", tool: "advisor" },
+    { l: "AI Requirement Generator", i: FileCode2, to: "/app/ai", tool: "requirements", roles: MT },
+    { l: "AI Sprint Planner", i: CalendarRange, to: "/app/ai", tool: "sprint", roles: MD },
+    { l: "AI Project Advisor", i: Lightbulb, to: "/app/ai", tool: "advisor", roles: M },
     { l: "AI Bug Assistant", i: SearchCode, to: "/app/ai", tool: "bug" },
-    { l: "AI Code Reviewer", i: ShieldCheck, to: "/app/ai", tool: "review" },
-    { l: "AI Test Case Generator", i: TestTubeDiagonal, to: "/app/ai", tool: "tests" },
+    { l: "AI Code Reviewer", i: ShieldCheck, to: "/app/ai", tool: "review", roles: MD },
+    { l: "AI Test Case Generator", i: TestTubeDiagonal, to: "/app/ai", tool: "tests", roles: MT },
     { l: "AI Documentation Generator", i: BookOpenText, to: "/app/ai", tool: "docs" },
-    { l: "AI Meeting Summarizer", i: NotebookPen, to: "/app/ai", tool: "meeting" },
+    { l: "AI Meeting Summarizer", i: NotebookPen, to: "/app/ai", tool: "meeting", roles: M },
   ] },
   { h: "Account", items: [
     { l: "Profile", i: UserRound, to: "/app/profile" },
@@ -63,7 +67,7 @@ function Tip({ show, label, children }: { show: boolean; label: string; children
   );
 }
 
-export function AppSidebar({ collapsed, onToggle, onLogout }: { collapsed: boolean; onToggle: () => void; onLogout: () => void }) {
+export function AppSidebar({ collapsed, onToggle, onLogout, role }: { collapsed: boolean; onToggle: () => void; onLogout: () => void; role: Role }) {
   const loc = useRouterState({ select: (s) => s.location });
   const currentTool = (loc.search as { tool?: string }).tool ?? "chat";
   const isActive = (it: Item) => it.tool ? loc.pathname === "/app/ai" && currentTool === it.tool : loc.pathname === it.to || (loc.pathname === `${it.to}/` );
@@ -98,7 +102,7 @@ export function AppSidebar({ collapsed, onToggle, onLogout }: { collapsed: boole
               </button>
             </Tip>
           )}
-          {sections.map((s) => (
+          {sections.map((sec) => ({ ...sec, items: sec.items.filter((it) => !it.roles || it.roles.includes(role)) })).map((s) => (
             <div key={s.h} className="mb-5">
               {collapsed ? <div className="mx-auto mb-2 h-px w-6 bg-line" /> : (
                 <div className="mb-2 px-3 text-[11px] font-medium uppercase tracking-[0.14em] text-dim">{s.h}</div>

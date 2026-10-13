@@ -11,3 +11,4 @@
 
 - All AI calls go through `src/routes/api/ai.ts` → `src/lib/ai/gateway.server.ts` (provider/model configured only there); tool prompts live in `src/lib/ai/prompts.ts`. Why: one swappable, server-side AI service layer with keys never in the browser.
 - Auth is client-side (localStorage, `src/lib/auth.ts`); `/app` gates with `ssr: false` + `beforeLoad`. Why: demo auth without a backend; replace with Lovable Cloud auth for real users.
+- Prototype data lives only in `src/lib/devpulse-data.ts` (marked SAMPLE); role-based navigation is UI-only (`src/lib/roles.ts`, `roles` on sidebar items). Why: keeps mock data swappable for a real API and avoids mistaking hidden menus for authorization.

@@ -62,3 +62,41 @@ export const languages = [
   { name: "TypeScript", v: 44 }, { name: "Go", v: 27 }, { name: "Python", v: 15 }, { name: "SQL", v: 8 }, { name: "Other", v: 6 },
 ];
 
+
+// ---- SAMPLE DATA (prototype only — replace with API calls in Phase 2) ----
+export const SAMPLE_DATA = true;
+
+export const teams = [
+  { id: "core", name: "Core Platform", members: [
+    { name: "Mei Chen", role: "manager", email: "mei@acme.com" },
+    { name: "Jae Kim", role: "developer", email: "jae@acme.com" },
+    { name: "Ana Ruiz", role: "developer", email: "ana@acme.com" },
+    { name: "Lola Okafor", role: "tester", email: "lola@acme.com" },
+  ], projects: ["Atlas Payments", "Helix Auth v3"] },
+  { id: "mobile", name: "Mobile Experience", members: [
+    { name: "Sana Patel", role: "manager", email: "sana@acme.com" },
+    { name: "Tom Berg", role: "developer", email: "tom@acme.com" },
+    { name: "Ivy Lin", role: "tester", email: "ivy@acme.com" },
+  ], projects: ["Orion Mobile"] },
+  { id: "data", name: "Data & Search", members: [
+    { name: "Ana Ruiz", role: "manager", email: "ana@acme.com" },
+    { name: "Raj Iyer", role: "developer", email: "raj@acme.com" },
+  ], projects: ["Nova Data Lake", "Vega Search"] },
+] as const;
+
+export const repos = [
+  { name: "acme/atlas-payments", lang: "Go", project: "Atlas Payments", stars: 142, prs: 8, lastCommit: "12m ago", branch: "main", ci: "passing" },
+  { name: "acme/atlas-web", lang: "TypeScript", project: "Atlas Payments", stars: 64, prs: 3, lastCommit: "1h ago", branch: "main", ci: "passing" },
+  { name: "acme/orion-app", lang: "Kotlin", project: "Orion Mobile", stars: 51, prs: 11, lastCommit: "34m ago", branch: "develop", ci: "failing" },
+  { name: "acme/nova-pipelines", lang: "Python", project: "Nova Data Lake", stars: 98, prs: 2, lastCommit: "3h ago", branch: "main", ci: "passing" },
+  { name: "acme/helix-auth", lang: "Go", project: "Helix Auth v3", stars: 77, prs: 5, lastCommit: "6h ago", branch: "main", ci: "passing" },
+  { name: "acme/vega-search", lang: "Rust", project: "Vega Search", stars: 120, prs: 4, lastCommit: "2h ago", branch: "main", ci: "running" },
+];
+
+export const activity = [
+  { who: "Jae Kim", what: "merged PR #482 into acme/atlas-payments", when: "12m ago" },
+  { who: "Lola Okafor", what: "reported BUG-221 · Race condition in settlement worker", when: "2h ago" },
+  { who: "Sana Patel", what: "moved DP-401 to In Progress", when: "3h ago" },
+  { who: "Ivy Lin", what: "ran regression suite Mobile · e2e (7 failures)", when: "4h ago" },
+  { who: "Raj Iyer", what: "pushed 6 commits to acme/nova-pipelines", when: "5h ago" },
+];
