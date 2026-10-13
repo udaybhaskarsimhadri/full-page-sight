@@ -113,6 +113,7 @@ export function AppSidebar({ collapsed, onToggle, onLogout }: { collapsed: boole
                         to={it.to}
                         {...(it.tool ? { search: { tool: it.tool } } : {})}
                         activeOptions={{ exact: true, includeSearch: false }}
+                        aria-label={collapsed ? it.l : undefined}
                         aria-current={active ? "page" : undefined}
                         className={rowCls(active, collapsed)}
                       >
@@ -125,7 +126,7 @@ export function AppSidebar({ collapsed, onToggle, onLogout }: { collapsed: boole
                 })}
                 {s.h === "Account" && (
                   <Tip show={collapsed} label="Logout">
-                    <button onClick={onLogout} className={cn(rowCls(false, collapsed), "w-full")}>
+                    <button onClick={onLogout} aria-label="Logout" className={cn(rowCls(false, collapsed), "w-full")}>
                       <LogOut className="h-[18px] w-[18px] shrink-0 transition-transform duration-200 group-hover/item:scale-110" strokeWidth={1.75} />
                       {!collapsed && <span>Logout</span>}
                     </button>
