@@ -62,9 +62,3 @@ export const languages = [
   { name: "TypeScript", v: 44 }, { name: "Go", v: 27 }, { name: "Python", v: 15 }, { name: "SQL", v: 8 }, { name: "Other", v: 6 },
 ];
 
-export const aiRecs = [
-  "Orion Mobile is trending 2.3 days behind — move DP-401 pairing to Wednesday.",
-  "BUG-221 correlates with commit a91f2e. Suggest rollback of settlement batching.",
-  "Mobile e2e flakiness up 18%. 4 tests account for 70% of failures.",
-  "Velocity stable at 98% — capacity exists to pull 6 pts from backlog.",
-];

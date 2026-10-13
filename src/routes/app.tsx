@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { Logo } from "@/components/devpulse/brand";
 import { Assistant } from "@/components/devpulse/assistant";
+import { AIChatProvider } from "@/components/devpulse/ai-chat";
 import { getSession, logout } from "@/lib/auth";
 
 export const Route = createFileRoute("/app")({
@@ -91,6 +92,7 @@ function AppLayout() {
   };
 
   return (
+    <AIChatProvider>
     <div className="flex min-h-screen">
       <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col overflow-y-auto border-r border-line bg-sidebar p-4 lg:flex">
         <div className="px-2 py-3"><Logo /></div>
@@ -136,5 +138,6 @@ function AppLayout() {
       </div>
       <Assistant />
     </div>
+    </AIChatProvider>
   );
 }

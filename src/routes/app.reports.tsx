@@ -1,4 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
+import { Sparkles } from "lucide-react";
 import { Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/devpulse/ui";
@@ -17,7 +19,7 @@ function csv() {
 function Page() {
   return (
     <>
-      <PageHeader title="Reports" sub="Generate and export executive-ready reports." />
+      <PageHeader title="Reports" sub="Generate and export executive-ready reports." action={<Button asChild variant="outline"><Link to="/app/ai" search={{ tool: "docs", q: "Write the Sprint 24 release notes and an executive status report." }}><Sparkles /> Generate with AI</Link></Button>} />
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {reports.map((r) => (
           <div key={r} className="card-lux lift p-6">

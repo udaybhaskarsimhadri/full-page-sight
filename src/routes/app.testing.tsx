@@ -1,4 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
+import { Sparkles } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Panel, PageHeader, Progress, Stat, Table } from "@/components/devpulse/ui";
 import { tests } from "@/lib/devpulse-data";
 
@@ -7,7 +10,7 @@ export const Route = createFileRoute("/app/testing")({ component: Page });
 function Page() {
   return (
     <>
-      <PageHeader title="Test Management" sub="Coverage, pass rate and release readiness." />
+      <PageHeader title="Test Management" sub="Coverage, pass rate and release readiness." action={<Button asChild variant="outline"><Link to="/app/ai" search={{ tool: "tests", q: "Generate test cases to raise Mobile e2e coverage and fix flaky failures." }}><Sparkles /> Generate tests</Link></Button>} />
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Stat label="Total tests" value="1,851" /><Stat label="Pass rate" value="99.4%" />
         <Stat label="Coverage" value="87.4%" /><Stat label="Flaky tests" value="11" delta="4 cause 70% of failures" />

@@ -152,3 +152,24 @@
 @keyframes fade-up { from { opacity: 0; transform: translateY(16px); filter: blur(6px) } to { opacity: 1; transform: none; filter: none } }
 @keyframes twinkle { 0%,100% { opacity: .15 } 50% { opacity: .9 } }
 @keyframes dash { to { stroke-dashoffset: -48 } }
+
+/* AI markdown output — monochrome */
+.prose-dp { font-size: 14px; line-height: 1.65; overflow-wrap: anywhere; }
+.prose-dp > * + * { margin-top: .75em; }
+.prose-dp h1, .prose-dp h2, .prose-dp h3, .prose-dp h4 { font-weight: 600; letter-spacing: -0.01em; margin-top: 1.2em; }
+.prose-dp h1 { font-size: 1.25em; } .prose-dp h2 { font-size: 1.12em; } .prose-dp h3 { font-size: 1em; }
+.prose-dp ul { list-style: disc; padding-left: 1.25em; } .prose-dp ol { list-style: decimal; padding-left: 1.25em; }
+.prose-dp li + li { margin-top: .25em; }
+.prose-dp a { text-decoration: underline; }
+.prose-dp strong { color: var(--foreground); font-weight: 600; }
+.prose-dp blockquote { border-left: 2px solid var(--dim); padding-left: 1em; color: var(--muted-foreground); }
+.prose-dp :not(pre) > code { background: var(--secondary); border: 1px solid var(--line); border-radius: 6px; padding: .1em .4em; font-family: var(--font-mono); font-size: .9em; }
+.prose-dp pre { background: oklch(0.12 0 0); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; overflow-x: auto; font-family: var(--font-mono); font-size: 12.5px; line-height: 1.6; }
+.prose-dp table { width: 100%; border-collapse: collapse; font-size: 13px; display: block; overflow-x: auto; }
+.prose-dp th, .prose-dp td { border-bottom: 1px solid var(--line); padding: 6px 10px; text-align: left; }
+.prose-dp th { color: var(--muted-foreground); font-weight: 500; }
+.hljs-keyword, .hljs-built_in, .hljs-selector-tag, .hljs-literal { color: oklch(1 0 0); font-weight: 600; }
+.hljs-string, .hljs-attr, .hljs-template-variable { color: oklch(0.8 0 0); }
+.hljs-comment, .hljs-quote { color: oklch(0.5 0 0); font-style: italic; }
+.hljs-number, .hljs-title, .hljs-function, .hljs-type { color: oklch(0.9 0 0); }
+.hljs-variable, .hljs-params, .hljs-meta { color: oklch(0.7 0 0); }

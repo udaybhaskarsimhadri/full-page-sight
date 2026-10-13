@@ -1,4 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
+import { Sparkles } from "lucide-react";
 import { Plus } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -10,7 +12,7 @@ export const Route = createFileRoute("/app/projects")({ component: Page });
 function Page() {
   return (
     <>
-      <PageHeader title="Projects" sub="Portfolio overview, ownership and delivery health." action={<Button onClick={() => toast.success("Project draft created", { description: "Untitled project added to your portfolio." })}><Plus /> New project</Button>} />
+      <PageHeader title="Projects" sub="Portfolio overview, ownership and delivery health." action={<div className="flex gap-2"><Button asChild variant="outline"><Link to="/app/ai" search={{ tool: "advisor", q: "Analyze all projects and recommend timeline, resourcing and risk improvements." }}><Sparkles /> AI advisor</Link></Button><Button onClick={() => toast.success("Project draft created", { description: "Untitled project added to your portfolio." })}><Plus /> New project</Button></div>} />
       <div className="mb-4 grid gap-4 md:grid-cols-3">
         {projects.slice(0, 3).map((p) => (
           <div key={p.name} className="card-lux lift p-6">
