@@ -1,4 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
+import { getSession } from "@/lib/auth";
 import { AuthCard } from "@/components/devpulse/auth-card";
 
 export const Route = createFileRoute("/signup")({
@@ -8,5 +9,9 @@ export const Route = createFileRoute("/signup")({
     { property: "og:title", content: "Create account — DevPulse" },
     { property: "og:description", content: "Create your DevPulse workspace for free." },
   ] }),
+  ssr: false,
+  beforeLoad: () => {
+    if (getSession()) throw redirect({ to: "/app" });
+  },
   component: () => <AuthCard mode="signup" />,
 });
