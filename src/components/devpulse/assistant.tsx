@@ -4,7 +4,7 @@ import { aiRecs } from "@/lib/devpulse-data";
 
 type Msg = { r: "u" | "a"; t: string };
 
-function reply(q: string) {
+export function assistantReply(q: string) {
   const s = q.toLowerCase();
   if (s.includes("bug")) return "2 critical bugs are open. BUG-221 (settlement race) correlates with commit a91f2e — I recommend rolling back batching.";
   if (s.includes("sprint") || s.includes("velocity")) return "Sprint 24 is at 57/58 points. Velocity has been ≥95% for 4 sprints; you can safely pull 6 points.";
@@ -21,7 +21,7 @@ export function Assistant() {
     if (!v.trim()) return;
     const q = v; setV("");
     setMsgs((m) => [...m, { r: "u", t: q }]);
-    setTimeout(() => setMsgs((m) => [...m, { r: "a", t: reply(q) }]), 500);
+    setTimeout(() => setMsgs((m) => [...m, { r: "a", t: assistantReply(q) }]), 500);
   };
   return (
     <>

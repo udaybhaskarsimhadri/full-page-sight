@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Plus } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Panel, PageHeader, Progress, Pill, Table } from "@/components/devpulse/ui";
 import { projects } from "@/lib/devpulse-data";
@@ -9,7 +10,7 @@ export const Route = createFileRoute("/app/projects")({ component: Page });
 function Page() {
   return (
     <>
-      <PageHeader title="Projects" sub="Portfolio overview, ownership and delivery health." action={<Button><Plus /> New project</Button>} />
+      <PageHeader title="Projects" sub="Portfolio overview, ownership and delivery health." action={<Button onClick={() => toast.success("Project draft created", { description: "Untitled project added to your portfolio." })}><Plus /> New project</Button>} />
       <div className="mb-4 grid gap-4 md:grid-cols-3">
         {projects.slice(0, 3).map((p) => (
           <div key={p.name} className="card-lux lift p-6">
