@@ -13,8 +13,8 @@ function Page() {
   const drop = (to: string) => {
     if (!drag || drag.from === to) return;
     setCols((c) => {
-      const task = c[drag.from].find((x) => x.id === drag.id)!;
-      return { ...c, [drag.from]: c[drag.from].filter((x) => x.id !== drag.id), [to]: [...c[to], task] };
+      const task = c[drag.from]!.find((x) => x.id === drag.id)!;
+      return { ...c, [drag.from]: c[drag.from]!.filter((x) => x.id !== drag.id), [to]: [...c[to]!, task] };
     });
   };
   return (

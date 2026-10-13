@@ -9,7 +9,7 @@ function reply(q: string) {
   if (s.includes("bug")) return "2 critical bugs are open. BUG-221 (settlement race) correlates with commit a91f2e — I recommend rolling back batching.";
   if (s.includes("sprint") || s.includes("velocity")) return "Sprint 24 is at 57/58 points. Velocity has been ≥95% for 4 sprints; you can safely pull 6 points.";
   if (s.includes("risk")) return "Highest risk: Orion Mobile, forecast to slip 2.3 days due to offline-sync complexity.";
-  return aiRecs[Math.floor(Math.random() * aiRecs.length)];
+  return aiRecs[Math.floor(Math.random() * aiRecs.length)] ?? "";
 }
 
 export function Assistant() {

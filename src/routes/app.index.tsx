@@ -49,8 +49,8 @@ function Dashboard() {
           <div key={k} draggable onDragStart={() => setDrag(k)} onDragEnd={() => setDrag(null)}
             onDragOver={(e) => e.preventDefault()} onDrop={() => drop(k)}
             className={drag === k ? "opacity-40 transition" : "transition"}>
-            <Panel title={widgets[k].title} action={<GripVertical className="h-4 w-4 cursor-grab text-dim" />} className="h-full">
-              {widgets[k].body}
+            <Panel title={widgets[k]!.title} action={<GripVertical className="h-4 w-4 cursor-grab text-dim" />} className="h-full">
+              {widgets[k]!.body}
             </Panel>
           </div>
         ))}
