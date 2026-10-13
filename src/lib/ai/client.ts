@@ -11,7 +11,7 @@ export async function runAI(mode: AIMode, messages: ChatMsg[], onDelta: (text: s
   const key = useCache ? JSON.stringify([mode, payload]) : "";
   if (key && cache.has(key)) { const t = cache.get(key)!; onDelta(t); return t; }
 
-  const res = await fetch("/api/ai", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ mode, messages: payload }), signal });
+  const res = await fetch("/api/ai", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ mode, messages: payload }), signal: signal ?? null });
   if (!res.ok || !res.body) {
     const j = (await res.json().catch(() => null)) as { error?: string } | null;
     throw new Error(j?.error ?? `Request failed (${res.status}).`);

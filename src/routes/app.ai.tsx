@@ -5,12 +5,12 @@ import { AITool } from "@/components/devpulse/ai-tool";
 import { AI_TOOLS, isMode, type AIMode } from "@/lib/ai/prompts";
 import { cn } from "@/lib/utils";
 
-type Search = { tool?: AIMode; q?: string };
+type Search = { tool?: AIMode | undefined; q?: string | undefined };
 
 export const Route = createFileRoute("/app/ai")({
   validateSearch: (s: Record<string, unknown>): Search => ({
-    tool: isMode(s.tool) ? s.tool : undefined,
-    q: typeof s.q === "string" ? s.q.slice(0, 4000) : undefined,
+    tool: isMode(s["tool"]) ? s["tool"] : undefined,
+    q: typeof s["q"] === "string" ? s["q"].slice(0, 4000) : undefined,
   }),
   component: Page,
 });
