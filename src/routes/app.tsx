@@ -49,17 +49,20 @@ const notifications = [
 function AppLayout() {
   const { session } = Route.useRouteContext();
   const navigate = useNavigate();
-  const router = useRouter();
+  const queryClient = useQueryClient();
   const [q, setQ] = useState("");
   const [bell, setBell] = useState(false);
   const searchRef = useRef<HTMLInputElement>(null);
   const [collapsed, setCollapsed] = useState(false);
   const [narrow, setNarrow] = useState(false);
-  const [role, setRoleState] = useState<Role>("manager");
+  const role = session.role;
   const [team, setTeam] = useState<string>(teams[0].id);
   const [menu, setMenu] = useState<"team" | "user" | null>(null);
-  useEffect(() => { setRoleState(getRole()); const t = window.localStorage.getItem("dp_team"); if (t && teams.some((x) => x.id === t)) setTeam(t); }, []);
-  const pickRole = (r: Role) => { setRole(r); setRoleState(r); setMenu(null); toast(`Viewing as ${ROLE_LABEL[r]}`, { description: "UI preview only — permissions are not enforced yet." }); };
+  useEffect(() => { const t = window.localStorage.getItem("dp_team"); if (t && teams.some((x) => x.id === t)) setTeam(t); }, []);
+  useEffect(() => {
+    const { data } = supabase.auth.onAuthStateChange((event) => { if (event === "SIGNED_OUT") navigate({ to: "/login", replace: true }); });
+    return () => data.subscription.unsubscribe();
+  }, [navigate]);
   const pickTeam = (id: string) => { setTeam(id); window.localStorage.setItem("dp_team", id); setMenu(null); };
   const teamName = teams.find((t) => t.id === team)?.name ?? teams[0].name;
 
@@ -96,8 +99,9 @@ function AppLayout() {
   };
 
   const signOut = async () => {
-    logout();
-    await router.invalidate();
+    await queryClient.cancelQueries();
+    queryClient.clear();
+    await logout();
     navigate({ to: "/login", replace: true });
   };
 
