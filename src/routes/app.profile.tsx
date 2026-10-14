@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Panel, PageHeader, Stat } from "@/components/devpulse/ui";
 import { updateName } from "@/lib/auth";
+import { ROLE_LABEL } from "@/lib/roles";
 
 export const Route = createFileRoute("/app/profile")({ component: Page });
 
@@ -15,7 +16,8 @@ function Page() {
   const [name, setName] = useState(session.name);
   const save = async () => {
     if (!name.trim()) { toast.error("Name can't be empty."); return; }
-    updateName(name.trim()); await router.invalidate(); toast.success("Profile updated");
+    try { await updateName(session.id, name.trim()); await router.invalidate(); toast.success("Profile updated"); }
+    catch (e) { toast.error(e instanceof Error ? e.message : "Could not save."); }
   };
   return (
     <>
@@ -24,12 +26,12 @@ function Page() {
         <Panel title="Account" className="lg:col-span-2">
           <div className="space-y-3">
             <input className={field} value={name} onChange={(e) => setName(e.target.value)} aria-label="Full name" />
-            <input className={field} value={session.email} readOnly aria-label="Email" />
+            <input className={field} value={`@${session.username}`} readOnly aria-label="Username" />
             <Button onClick={save}>Save profile</Button>
           </div>
         </Panel>
         <div className="space-y-4">
-          <Stat label="Role" value="Eng. Manager" />
+          <Stat label="Role" value={ROLE_LABEL[session.role]} />
           <Stat label="Teams" value="4" delta="Payments, Mobile, Data, Identity" />
         </div>
       </div>

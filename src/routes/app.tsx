@@ -147,13 +147,7 @@ function AppLayout() {
             <button aria-label="Account menu" onClick={() => setMenu((m) => (m === "user" ? null : "user"))} className="grid h-9 w-9 place-items-center rounded-full bg-foreground text-sm font-semibold text-background">{initials}</button>
             {menu === "user" && (
               <div className="glass fade-up absolute right-0 top-12 z-50 w-64 rounded-[20px] p-2">
-                <div className="px-3 py-2"><div className="text-sm font-medium">{session.name}</div><div className="text-label text-muted-foreground">{session.email}</div></div>
-                <div className="px-3 pb-1 pt-2 text-[11px] uppercase tracking-[0.14em] text-dim">View as (UI preview)</div>
-                {(Object.keys(ROLE_LABEL) as Role[]).map((r) => (
-                  <button key={r} onClick={() => pickRole(r)} className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-sm hover:bg-secondary/50 ${r === role ? "text-foreground" : "text-muted-foreground"}`}>
-                    {ROLE_LABEL[r]}{r === role && <span className="h-1.5 w-1.5 rounded-full bg-foreground" />}
-                  </button>
-                ))}
+                <div className="px-3 py-2"><div className="text-sm font-medium">{session.name}</div><div className="text-label text-muted-foreground">@{session.username} · {ROLE_LABEL[role]}</div></div>
                 <div className="my-1 h-px bg-line" />
                 <Link to="/app/profile" onClick={() => setMenu(null)} className="block rounded-xl px-3 py-2 text-sm text-muted-foreground hover:bg-secondary/50 hover:text-foreground">Profile</Link>
                 <button onClick={signOut} className="w-full rounded-xl px-3 py-2 text-left text-sm text-muted-foreground hover:bg-secondary/50 hover:text-foreground">Log out</button>
