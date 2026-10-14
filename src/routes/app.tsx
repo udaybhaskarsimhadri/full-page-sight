@@ -1,19 +1,22 @@
-import { createFileRoute, Link, Outlet, redirect, useNavigate, useRouter } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, redirect, useNavigate } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { toast } from "sonner";
 import { Search, Bell, ChevronDown } from "lucide-react";
 import { teams } from "@/lib/devpulse-data";
-import { getRole, setRole, ROLE_LABEL, type Role } from "@/lib/roles";
+import { ROLE_LABEL, canAccess } from "@/lib/roles";
 import { AppSidebar, navPages } from "@/components/devpulse/app-sidebar";
 import { Assistant } from "@/components/devpulse/assistant";
 import { AIChatProvider } from "@/components/devpulse/ai-chat";
 import { getSession, logout } from "@/lib/auth";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/app")({
   ssr: false,
-  beforeLoad: () => {
-    const session = getSession();
+  beforeLoad: async ({ location }) => {
+    const session = await getSession();
     if (!session) throw redirect({ to: "/login" });
+    if (!canAccess(session.role, location.pathname)) throw redirect({ to: "/app" });
     return { session };
   },
   pendingComponent: AuthLoading,
