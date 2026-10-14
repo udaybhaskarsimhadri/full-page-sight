@@ -4,6 +4,7 @@ import { GripVertical, Sparkles } from "lucide-react";
 import { Panel, Stat, PageHeader, Progress, Pill } from "@/components/devpulse/ui";
 import { VelocityChart, BurndownChart, CommitsChart, LanguagesChart } from "@/components/devpulse/charts";
 import { projects, bugs, tests, repos, activity } from "@/lib/devpulse-data";
+import { ROLE_LABEL, type Role } from "@/lib/roles";
 
 export const Route = createFileRoute("/app/")({ component: Dashboard });
 
@@ -39,11 +40,23 @@ const widgets: Record<string, { title: string; wide?: boolean; body: ReactNode }
       <div key={t.suite}><div className="mb-1.5 flex justify-between text-sm"><span>{t.suite}</span><span className="text-muted-foreground">{t.cov}% cov</span></div><Progress v={t.cov} /></div>))}</div>) },
 };
 
+const ROLE_WIDGETS: Record<Role, string[]> = {
+  manager: Object.keys(widgets),
+  developer: ["velocity", "burndown", "commits", "langs", "bugs", "activity", "ai"],
+  tester: ["tests", "bugs", "health", "attention", "activity", "ai"],
+};
+const ROLE_SUB: Record<Role, string> = {
+  manager: "Here's what's happening across your engineering org.",
+  developer: "Your sprint, code activity and assigned bugs.",
+  tester: "Test coverage, failing suites and open defects.",
+};
+
 function Dashboard() {
   const { session } = Route.useRouteContext();
+  const role = session.role;
   const passed = tests.reduce((a, t) => a + t.pass, 0);
   const failed = tests.reduce((a, t) => a + t.fail, 0);
-  const [order, setOrder] = useState(Object.keys(widgets));
+  const [order, setOrder] = useState(ROLE_WIDGETS[role]);
   const [drag, setDrag] = useState<string | null>(null);
   const drop = (target: string) => {
     if (!drag || drag === target) return;
@@ -51,15 +64,33 @@ function Dashboard() {
     next.splice(next.indexOf(target), 0, drag);
     setOrder(next);
   };
+  const openBugs = bugs.filter((b) => b.status !== "Verified").length;
+  const passRate = `${(100 * passed / (passed + failed)).toFixed(1)}%`;
   return (
     <>
-      <PageHeader title={`Welcome back, ${session.name.split(" ")[0]}`} sub="Here's what's happening across your engineering org." action={<Pill>Sample data</Pill>} />
+      <PageHeader title={`Welcome back, ${session.name.split(" ")[0]}`} sub={`${ROLE_LABEL[role]} dashboard · ${ROLE_SUB[role]}`} action={<Pill>Sample data</Pill>} />
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-        <Stat label="Total projects" value={String(projects.length)} delta={`${projects.filter((p) => p.health !== "Healthy").length} need attention`} />
-        <Stat label="Active repositories" value={String(repos.length)} delta={`${repos.reduce((a, r) => a + r.prs, 0)} open PRs`} />
-        <Stat label="Open tasks" value="1,204" delta="312 in progress" />
-        <Stat label="Open bugs" value={String(bugs.filter((b) => b.status !== "Verified").length)} delta={`${bugs.filter((b) => b.sev === "Critical").length} critical`} />
-        <Stat label="Testing pass rate" value={`${(100 * passed / (passed + failed)).toFixed(1)}%`} delta={`${failed} failing tests`} />
+        {role === "manager" && <>
+          <Stat label="Total projects" value={String(projects.length)} delta={`${projects.filter((p) => p.health !== "Healthy").length} need attention`} />
+          <Stat label="Active repositories" value={String(repos.length)} delta={`${repos.reduce((a, r) => a + r.prs, 0)} open PRs`} />
+          <Stat label="Open tasks" value="1,204" delta="312 in progress" />
+          <Stat label="Open bugs" value={String(openBugs)} delta={`${bugs.filter((b) => b.sev === "Critical").length} critical`} />
+          <Stat label="Testing pass rate" value={passRate} delta={`${failed} failing tests`} />
+        </>}
+        {role === "developer" && <>
+          <Stat label="My open tasks" value="14" delta="5 in progress" />
+          <Stat label="Open PRs" value={String(repos.reduce((a, r) => a + r.prs, 0))} delta="3 awaiting review" />
+          <Stat label="Commits this week" value="47" delta="+12% vs last week" />
+          <Stat label="Assigned bugs" value={String(openBugs)} delta={`${bugs.filter((b) => b.sev === "Critical").length} critical`} />
+          <Stat label="Sprint 24" value="68%" delta="4 days left" />
+        </>}
+        {role === "tester" && <>
+          <Stat label="Pass rate" value={passRate} delta={`${failed} failing tests`} />
+          <Stat label="Test suites" value={String(tests.length)} />
+          <Stat label="Open defects" value={String(openBugs)} delta={`${bugs.filter((b) => b.sev === "Critical").length} critical`} />
+          <Stat label="Avg coverage" value={`${Math.round(tests.reduce((a, t) => a + t.cov, 0) / tests.length)}%`} />
+          <Stat label="Ready to verify" value={String(bugs.filter((b) => b.status !== "Verified" && b.status !== "Open").length)} />
+        </>}
       </div>
       <p className="mt-8 mb-3 text-label text-muted-foreground">Drag widgets to rearrange</p>
       <div className="grid gap-4 md:grid-cols-2">
