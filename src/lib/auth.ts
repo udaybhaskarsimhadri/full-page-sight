@@ -1,67 +1,55 @@
-// Client-side demo auth: users + session token persisted in localStorage.
-export type Session = { email: string; name: string; token: string; expiresAt: number };
-type User = { email: string; name: string; password: string };
+// Real accounts via Lovable Cloud auth (hashed passwords, signed JWT sessions persisted across refresh).
+// Users sign in with username + password; the username maps to an internal, never-mailed address.
+import { supabase } from "@/integrations/supabase/client";
+import type { Role } from "@/lib/roles";
 
-const USERS = "dp_users";
-const SESSION = "dp_session";
-const TTL = 7 * 24 * 60 * 60 * 1000;
-export const DEMO = { email: "demo@devpulse.ai", password: "devpulse123", name: "Uday Bhaskar" };
+export type Session = { id: string; username: string; name: string; role: Role };
 
-const store = () => (typeof window === "undefined" ? null : window.localStorage);
+const USERNAME = /^[a-z0-9_.-]{3,32}$/;
+export const normalizeUsername = (u: string) => u.trim().toLowerCase();
+export const usernameToEmail = (u: string) => `${normalizeUsername(u)}@users.devpulse.app`;
 
-function users(): User[] {
-  try {
-    const list = JSON.parse(store()?.getItem(USERS) ?? "[]") as User[];
-    return list.some((u) => u.email === DEMO.email) ? list : [DEMO, ...list];
-  } catch {
-    return [DEMO];
-  }
-}
-
-function issue(u: User): Session {
-  const token = btoa(`${u.email}:${Date.now()}:${Math.random().toString(36).slice(2)}`);
-  const s = { email: u.email, name: u.name, token, expiresAt: Date.now() + TTL };
-  store()?.setItem(SESSION, JSON.stringify(s));
-  return s;
-}
-
-export function getSession(): Session | null {
-  try {
-    const s = JSON.parse(store()?.getItem(SESSION) ?? "null") as Session | null;
-    if (!s || s.expiresAt < Date.now()) return null;
-    return s;
-  } catch {
-    return null;
-  }
-}
-
-export function login(email: string, password: string): Session {
-  const e = email.trim().toLowerCase();
-  if (!e || !password) throw new Error("Enter your email and password.");
-  const u = users().find((x) => x.email === e);
-  if (!u || u.password !== password) throw new Error("Invalid email or password.");
-  return issue(u);
-}
-
-export function signup(name: string, email: string, password: string): Session {
-  const e = email.trim().toLowerCase();
-  if (!name.trim()) throw new Error("Enter your name.");
-  if (!/^\S+@\S+\.\S+$/.test(e)) throw new Error("Enter a valid email address.");
+export function validateSignup(username: string, password: string, role: string) {
+  if (!USERNAME.test(normalizeUsername(username))) throw new Error("Username must be 3–32 characters: letters, numbers, . _ -");
   if (password.length < 8) throw new Error("Password must be at least 8 characters.");
-  const list = users();
-  if (list.some((u) => u.email === e)) throw new Error("An account with this email already exists.");
-  const u = { email: e, name: name.trim(), password };
-  store()?.setItem(USERS, JSON.stringify([...list, u]));
-  return issue(u);
+  if (!["manager", "developer", "tester"].includes(role)) throw new Error("Choose a role.");
 }
 
-export function updateName(name: string) {
-  const s = getSession();
-  if (!s) return;
-  store()?.setItem(SESSION, JSON.stringify({ ...s, name }));
-  store()?.setItem(USERS, JSON.stringify(users().map((u) => (u.email === s.email ? { ...u, name } : u))));
+export async function getSession(): Promise<Session | null> {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return null;
+  const [{ data: profile }, { data: roles }] = await Promise.all([
+    supabase.from("profiles").select("username, display_name").eq("id", user.id).maybeSingle(),
+    supabase.from("user_roles").select("role").eq("user_id", user.id),
+  ]);
+  const role = (roles?.[0]?.role ?? "developer") as Role;
+  const username = profile?.username ?? user.email?.split("@")[0] ?? "user";
+  return { id: user.id, username, name: profile?.display_name ?? username, role };
 }
 
-export function logout() {
-  store()?.removeItem(SESSION);
+export async function login(username: string, password: string) {
+  if (!username.trim() || !password) throw new Error("Enter your username and password.");
+  const { error } = await supabase.auth.signInWithPassword({ email: usernameToEmail(username), password });
+  if (error) throw new Error("Invalid username or password.");
+}
+
+export async function signup(name: string, username: string, password: string, role: Role) {
+  validateSignup(username, password, role);
+  const u = normalizeUsername(username);
+  const { data, error } = await supabase.auth.signUp({
+    email: usernameToEmail(u),
+    password,
+    options: { data: { username: u, display_name: name.trim() || u, role } },
+  });
+  if (error) throw new Error(/registered|exists/i.test(error.message) ? "That username is taken." : error.message);
+  if (!data.session) throw new Error("Account created — please sign in.");
+}
+
+export async function updateName(id: string, name: string) {
+  const { error } = await supabase.from("profiles").update({ display_name: name }).eq("id", id);
+  if (error) throw new Error(error.message);
+}
+
+export async function logout() {
+  await supabase.auth.signOut();
 }
