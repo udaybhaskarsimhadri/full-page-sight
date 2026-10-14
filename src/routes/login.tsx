@@ -10,8 +10,8 @@ export const Route = createFileRoute("/login")({
     { property: "og:description", content: "Sign in to your DevPulse workspace." },
   ] }),
   ssr: false,
-  beforeLoad: () => {
-    if (getSession()) throw redirect({ to: "/app" });
+  beforeLoad: async () => {
+    if (await getSession()) throw redirect({ to: "/app" });
   },
   component: () => <AuthCard mode="login" />,
 });

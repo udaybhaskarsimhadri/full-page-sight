@@ -1,19 +1,22 @@
-import { createFileRoute, Link, Outlet, redirect, useNavigate, useRouter } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, redirect, useNavigate } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { toast } from "sonner";
 import { Search, Bell, ChevronDown } from "lucide-react";
 import { teams } from "@/lib/devpulse-data";
-import { getRole, setRole, ROLE_LABEL, type Role } from "@/lib/roles";
+import { ROLE_LABEL, canAccess } from "@/lib/roles";
 import { AppSidebar, navPages } from "@/components/devpulse/app-sidebar";
 import { Assistant } from "@/components/devpulse/assistant";
 import { AIChatProvider } from "@/components/devpulse/ai-chat";
 import { getSession, logout } from "@/lib/auth";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/app")({
   ssr: false,
-  beforeLoad: () => {
-    const session = getSession();
+  beforeLoad: async ({ location }) => {
+    const session = await getSession();
     if (!session) throw redirect({ to: "/login" });
+    if (!canAccess(session.role, location.pathname)) throw redirect({ to: "/app" });
     return { session };
   },
   pendingComponent: AuthLoading,
@@ -46,17 +49,20 @@ const notifications = [
 function AppLayout() {
   const { session } = Route.useRouteContext();
   const navigate = useNavigate();
-  const router = useRouter();
+  const queryClient = useQueryClient();
   const [q, setQ] = useState("");
   const [bell, setBell] = useState(false);
   const searchRef = useRef<HTMLInputElement>(null);
   const [collapsed, setCollapsed] = useState(false);
   const [narrow, setNarrow] = useState(false);
-  const [role, setRoleState] = useState<Role>("manager");
+  const role = session.role;
   const [team, setTeam] = useState<string>(teams[0].id);
   const [menu, setMenu] = useState<"team" | "user" | null>(null);
-  useEffect(() => { setRoleState(getRole()); const t = window.localStorage.getItem("dp_team"); if (t && teams.some((x) => x.id === t)) setTeam(t); }, []);
-  const pickRole = (r: Role) => { setRole(r); setRoleState(r); setMenu(null); toast(`Viewing as ${ROLE_LABEL[r]}`, { description: "UI preview only — permissions are not enforced yet." }); };
+  useEffect(() => { const t = window.localStorage.getItem("dp_team"); if (t && teams.some((x) => x.id === t)) setTeam(t); }, []);
+  useEffect(() => {
+    const { data } = supabase.auth.onAuthStateChange((event) => { if (event === "SIGNED_OUT") navigate({ to: "/login", replace: true }); });
+    return () => data.subscription.unsubscribe();
+  }, [navigate]);
   const pickTeam = (id: string) => { setTeam(id); window.localStorage.setItem("dp_team", id); setMenu(null); };
   const teamName = teams.find((t) => t.id === team)?.name ?? teams[0].name;
 
@@ -93,8 +99,9 @@ function AppLayout() {
   };
 
   const signOut = async () => {
-    logout();
-    await router.invalidate();
+    await queryClient.cancelQueries();
+    queryClient.clear();
+    await logout();
     navigate({ to: "/login", replace: true });
   };
 
@@ -140,13 +147,7 @@ function AppLayout() {
             <button aria-label="Account menu" onClick={() => setMenu((m) => (m === "user" ? null : "user"))} className="grid h-9 w-9 place-items-center rounded-full bg-foreground text-sm font-semibold text-background">{initials}</button>
             {menu === "user" && (
               <div className="glass fade-up absolute right-0 top-12 z-50 w-64 rounded-[20px] p-2">
-                <div className="px-3 py-2"><div className="text-sm font-medium">{session.name}</div><div className="text-label text-muted-foreground">{session.email}</div></div>
-                <div className="px-3 pb-1 pt-2 text-[11px] uppercase tracking-[0.14em] text-dim">View as (UI preview)</div>
-                {(Object.keys(ROLE_LABEL) as Role[]).map((r) => (
-                  <button key={r} onClick={() => pickRole(r)} className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-sm hover:bg-secondary/50 ${r === role ? "text-foreground" : "text-muted-foreground"}`}>
-                    {ROLE_LABEL[r]}{r === role && <span className="h-1.5 w-1.5 rounded-full bg-foreground" />}
-                  </button>
-                ))}
+                <div className="px-3 py-2"><div className="text-sm font-medium">{session.name}</div><div className="text-label text-muted-foreground">@{session.username} · {ROLE_LABEL[role]}</div></div>
                 <div className="my-1 h-px bg-line" />
                 <Link to="/app/profile" onClick={() => setMenu(null)} className="block rounded-xl px-3 py-2 text-sm text-muted-foreground hover:bg-secondary/50 hover:text-foreground">Profile</Link>
                 <button onClick={signOut} className="w-full rounded-xl px-3 py-2 text-left text-sm text-muted-foreground hover:bg-secondary/50 hover:text-foreground">Log out</button>

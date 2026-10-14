@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import type { AIMode } from "@/lib/ai/prompts";
-import type { Role } from "@/lib/roles";
+import { canAccess, type Role } from "@/lib/roles";
 import { cn } from "@/lib/utils";
 
 type Item = { l: string; i: LucideIcon; to: string; tool?: AIMode; roles?: Role[] };
@@ -102,7 +102,7 @@ export function AppSidebar({ collapsed, onToggle, onLogout, role }: { collapsed:
               </button>
             </Tip>
           )}
-          {sections.map((sec) => ({ ...sec, items: sec.items.filter((it) => !it.roles || it.roles.includes(role)) })).map((s) => (
+          {sections.map((sec) => ({ ...sec, items: sec.items.filter((it) => (!it.roles || it.roles.includes(role)) && canAccess(role, it.to)) })).map((s) => (
             <div key={s.h} className="mb-5">
               {collapsed ? <div className="mx-auto mb-2 h-px w-6 bg-line" /> : (
                 <div className="mb-2 px-3 text-[11px] font-medium uppercase tracking-[0.14em] text-dim">{s.h}</div>

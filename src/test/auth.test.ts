@@ -1,29 +1,22 @@
-import { beforeEach, describe, expect, it } from "vitest";
-import { DEMO, getSession, login, logout, signup } from "@/lib/auth";
+import { describe, expect, it } from "vitest";
+import { usernameToEmail, validateSignup } from "@/lib/auth";
+import { canAccess } from "@/lib/roles";
 
-describe("auth", () => {
-  beforeEach(() => localStorage.clear());
-
-  it("rejects a wrong password", () => {
-    expect(() => login(DEMO.email, "nope")).toThrow("Invalid email or password.");
-    expect(getSession()).toBeNull();
+describe("auth rules", () => {
+  it("rejects passwords under 8 characters", () => {
+    expect(() => validateSignup("alice", "short", "developer")).toThrow();
+    expect(() => validateSignup("alice", "longenough", "developer")).not.toThrow();
   });
-
-  it("persists the session after login (survives refresh)", () => {
-    login(DEMO.email, DEMO.password);
-    expect(getSession()?.email).toBe(DEMO.email);
+  it("usernames are case-insensitive", () => {
+    expect(usernameToEmail(" Alice ")).toBe(usernameToEmail("alice"));
   });
-
-  it("logout clears the session", () => {
-    login(DEMO.email, DEMO.password);
-    logout();
-    expect(getSession()).toBeNull();
+  it("only the three roles are allowed", () => {
+    expect(() => validateSignup("alice", "longenough", "admin")).toThrow();
   });
+});
 
-  it("signup requires 8+ char password and then allows login", () => {
-    expect(() => signup("A", "a@b.co", "short")).toThrow();
-    signup("A", "a@b.co", "longenough");
-    logout();
-    expect(login("a@b.co", "longenough").email).toBe("a@b.co");
-  });
+describe("role access", () => {
+  it("developers cannot open test management", () => expect(canAccess("developer", "/app/testing")).toBe(false));
+  it("testers cannot open sprints", () => expect(canAccess("tester", "/app/sprints")).toBe(false));
+  it("managers can open everything", () => expect(canAccess("manager", "/app/teams")).toBe(true));
 });
